@@ -1,4 +1,4 @@
-const seed_usernames = [
+let seed_usernames = [
   'Aaran',
   'Aaren',
   'Aarez',
@@ -118,7 +118,7 @@ const seed_reactions = [
 const getRandomArrItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 // Gets a random username
-const getRandomName = () => getRandomArrItem(seed_usernames).toLowerCase();
+const getRandomName = () => seed_usernames.splice(Math.floor(Math.random() * seed_usernames.length),1)[0].toLowerCase();
 
 // Function to generate random thoughts
 const getRandomThought = () => {

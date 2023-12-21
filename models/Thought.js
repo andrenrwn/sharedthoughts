@@ -1,6 +1,6 @@
 const { Schema, model, Types } = require('mongoose');
 const User = require('./User');
-// const reactionSchema = require('./Reaction');
+const reactionSchema = require('./Reaction');
 
 const thoughtSchema = new Schema(
   {
@@ -18,9 +18,9 @@ const thoughtSchema = new Schema(
     username: {
       type: String,
       required: true,
-      // ref: User ?
     },
-    // reactions: [reactionSchema],
+    // try using Mongoose subdocuments
+    reactions: [reactionSchema],
     // students: [
     //   {
     //     type: Schema.Types.ObjectId,

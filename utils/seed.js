@@ -41,23 +41,28 @@ connection.once('open', async () => {
     });
   };
 
-  // Populate random reaction strings
-  const reactions = [];
-  for (let i = 1; i <= 25; i++) {
-    reactions.push({
-      reactionBody: getRandomReaction(),
-      username: getRandomArrItem(users).username,
-    });
-  };
-
   // Add users to the collection and await the results
   await User.collection.insertMany(users);
 
   // Add thoughts
-  await Thought.collection.insertMany(thoughts);
+  // await Thought.collection.insertMany(thoughts);
+  thoughts.forEach(async (elem) => {
+
+    // Populate random reaction strings
+    const subreactions = [];
+    for (let i = 0; i < Math.floor(Math.random() * 5); i++) {
+      subreactions.push({
+        reactionBody: getRandomReaction(),
+        username: getRandomArrItem(users).username,
+      });
+    };
+    elem['reactions'] = subreactions;
+    console.log(elem);
+    await Thought.collection.insertOne(elem);
+  });
 
   // Add reactions
-  await Reaction.collection.insertMany(reactions);
+  // await Reaction.collection.insertMany(reactions);
 
   // // Add courses to the collection and await the results
   // await Course.collection.insertOne({
@@ -69,7 +74,6 @@ connection.once('open', async () => {
   // // Log out the seed data to indicate what should appear in the database
   console.table(users);
   console.table(thoughts);
-  console.table(reactions);
 
   console.info('Seeding complete! 🌱');
   process.exit(0);

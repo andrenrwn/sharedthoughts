@@ -21,21 +21,15 @@ const reactionSchema = new Schema(
       default: Date.now(),
       get: () => { return `Date.now`; },
     },
-    students: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Student',
-      },
-    ],
   },
   {
     toJSON: {
-      virtuals: true,
+      // virtuals: true,
     },
     // id: false,
   }
 );
 
-const Reaction = model('course', reactionSchema);
+// const Reaction = model('course', reactionSchema);
 
-module.exports = Reaction, reactionSchema;
+module.exports = reactionSchema;

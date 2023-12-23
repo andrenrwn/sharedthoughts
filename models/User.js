@@ -1,5 +1,5 @@
 const { Schema, model } = require('mongoose');
-const Thought = require('./Thought');
+// const { Thought, thoughtSchema } = require('./Thought');
 
 let validateEmail = function (email) {
   // The following email regex matcher is from bortzmeyer's answer here: https://stackoverflow.com/questions/201323/how-can-i-validate-an-email-address-using-a-regular-expression
@@ -24,13 +24,17 @@ const userSchema = new Schema(
       unique: true,
       validate: [validateEmail, 'Please enter a valid RFC5322 email address'],
     },
+    // thoughts: [{
+    //   _id: Schema.Types.ObjectId,
+    //   ref: thoughtSchema
+    // }],
     thoughts: [{
-      _id: Schema.Types.ObjectId,
-      ref: Thought,
+      type: Schema.Types.ObjectId,
+      ref: 'Thought',
     }],
     friends: [{
-      _id: Schema.Types.ObjectId,
-      ref: this,
+      type: Schema.Types.ObjectId,
+      ref: 'User',
     }],
   },
   {
@@ -47,6 +51,6 @@ userSchema.virtual('friendCount').get(function () {
 });
 
 // Assign the schema to the MongoDB database model
-const User = model('user', userSchema);
+const User = model('User', userSchema);
 
 module.exports = User;

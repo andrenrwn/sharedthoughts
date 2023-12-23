@@ -25,7 +25,6 @@ let seed_usernames = [
   'Smith',
   'Jones',
   'Coollastname',
-  'enter_name_here',
   'Ze',
   'Zechariah',
   'Zeek',
@@ -118,7 +117,18 @@ const seed_reactions = [
 const getRandomArrItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 // Gets a random username
-const getRandomName = () => seed_usernames.splice(Math.floor(Math.random() * seed_usernames.length),1)[0].toLowerCase();
+const getRandomName = () => seed_usernames.splice(Math.floor(Math.random() * seed_usernames.length), 1)[0].toLowerCase();
+
+const getRandomNames = (num, arr) => {
+  let somenames = [...arr];
+  let pickednames = [];
+  for (i = 0; i < num; i++) {
+    let [aname] = somenames.splice(Math.floor(Math.random() * (somenames.length)), 1);
+    // console.log("a name:", aname);
+    pickednames.push(aname);
+  };
+  return pickednames;
+};
 
 // Function to generate random thoughts
 const getRandomThought = () => {
@@ -131,4 +141,4 @@ const getRandomReaction = () => {
 };
 
 // Export the functions for use in seed.js
-module.exports = { getRandomName, getRandomThought, getRandomReaction, getRandomArrItem };
+module.exports = { getRandomName, getRandomNames, getRandomThought, getRandomReaction, getRandomArrItem };

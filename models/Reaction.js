@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose');
+const { Schema } = require('mongoose');
 
 // Schema to create a course model
 const reactionSchema = new Schema(
@@ -15,11 +15,12 @@ const reactionSchema = new Schema(
     username: {
       type: String,
       required: true,
+      ref: 'User',
     },
     createdAt: {
       type: Date,
       default: Date.now(),
-      get: () => { return `Date.now`; },
+      get: () => { return `${Date.now}`; },
     },
   },
   {
@@ -29,7 +30,5 @@ const reactionSchema = new Schema(
     // id: false,
   }
 );
-
-// const Reaction = model('course', reactionSchema);
 
 module.exports = reactionSchema;

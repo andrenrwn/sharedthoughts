@@ -28,14 +28,16 @@ const thoughtSchema = new Schema(
     toJSON: {
       getters: true,
     },
-    // id: false,
+    id: false,
   }
 );
 
-// // Create a virtual property `commentCount` that gets the amount of comments per post
-// thoughtSchema.virtual('reactionCount').get(function () {
-//   return this.reactions.length;
-// });
+// Create a virtual property `commentCount` that gets the amount of comments per post
+thoughtSchema.virtual('reactionCount').get(function () {
+  if (this.reactions) {
+    return this.reactions.length;
+  };
+});
 
 // Assign the schema to the MongoDB database model
 const Thought = model('Thought', thoughtSchema);

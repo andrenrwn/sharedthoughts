@@ -93,11 +93,8 @@ connection.once('open', async () => {
 
   await Thought.collection.insertMany(thoughts);
 
-  console.table(users);
-  console.table(thoughts);
-
   let storedthoughts = await Thought.find().populate().exec();
-  // console.log("STORED THOUGHTS:", JSON.stringify(storedthoughts, null, 4));
+  console.log("STORED THOUGHTS:", JSON.stringify(storedthoughts, null, 4));
 
   // iterate through all users to inject their thoughts
   for (let i = 0; i < storedUsers.length; i++) {
@@ -107,6 +104,8 @@ connection.once('open', async () => {
     console.log(`User ${storedUsers[i].username}'s thoughts:`, userwithThought);
   };
 
+  console.table(users);
+  console.table(thoughts);
 
   console.info('Seeding complete! 🌱');
   process.exit(0);

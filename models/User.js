@@ -24,10 +24,6 @@ const userSchema = new Schema(
       unique: true,
       validate: [validateEmail, 'Please enter a valid RFC5322 email address'],
     },
-    // thoughts: [{
-    //   _id: Schema.Types.ObjectId,
-    //   ref: thoughtSchema
-    // }],
     thoughts: [{
       type: Schema.Types.ObjectId,
       ref: 'Thought',
@@ -42,12 +38,15 @@ const userSchema = new Schema(
       getters: true,
       virtuals: true
     },
+    id: false,
   }
 );
 
 // Create a virtual property `commentCount` that gets the amount of comments per post
-userSchema.virtual('friendCount').get(function () {
-  return this.friends.length;
+userSchema.virtual('friendcount').get(function () {
+  if (this.friends) {
+    return this.friends.length
+  };
 });
 
 // Assign the schema to the MongoDB database model

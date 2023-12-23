@@ -43,6 +43,36 @@ module.exports = {
             res.status(500).json({ message: `createUser: ERROR: ${err}` });
         }
     },
+
+    // Delete a student and remove them from the course
+    async deleteUser(req, res) {
+        try {
+            const deletedUser = await User.findOneAndDelete({ _id: req.params.id });
+
+            if (!deletedUser) {
+                return res.status(404).json({ message: `User with ID ${req.params.id} not found` })
+            };
+
+            // const course = await Course.findOneAndUpdate(
+            //     { students: req.params.studentId },
+            //     { $pull: { students: req.params.studentId } },
+            //     { new: true }
+            // );
+
+            // if (!course) {
+            //     return res.status(404).json({
+            //         message: 'Student deleted, but no courses found',
+            //     });
+            // }
+
+            res.json({ message: `User ${deletedUser} successfully deleted` });
+        } catch (err) {
+            console.log(err);
+            res.status(500).json(err);
+        }
+    },
+
+
 };
 
 // // Aggregate function to get the number of students overall

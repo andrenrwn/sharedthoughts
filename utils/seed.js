@@ -1,6 +1,6 @@
 const connection = require('../config/connection');
 const { User, Thought, Reaction } = require('../models');
-const { getRandomName, getRandomNames, getRandomThought, getRandomReaction, getRandomArrItem } = require('./data');
+const { getRandomName, getRandomNames, getRandomThought, getRandomReaction, getRandomArrItem, generateRandomDate } = require('./data');
 
 connection.on('error', (err) => err);
 
@@ -10,11 +10,6 @@ connection.once('open', async () => {
   let thoughtsCheck = await connection.db.listCollections({ name: 'thoughts' }).toArray();
   if (thoughtsCheck.length) {
     await connection.dropCollection('thoughts');
-  };
-
-  let reactionsCheck = await connection.db.listCollections({ name: 'reactions' }).toArray();
-  if (reactionsCheck.length) {
-    await connection.dropCollection('reactions');
   };
 
   let usersCheck = await connection.db.listCollections({ name: 'users' }).toArray();
@@ -45,16 +40,19 @@ connection.once('open', async () => {
     let randomnum = Math.floor(Math.random() * 4);
     let somefriends = getRandomNames(randomnum, allUsers);
     allUsers[i].friends = somefriends;
-    let someone;
-    try {
-      // Inject friends by updating the user record in Mongodb
-      someone = await User.findOneAndUpdate(
-        { _id: allUsers[i]._id },
-        { $set: { friends: allUsers[i].friends } },
-        { returnOriginal: false, new: true })
-        .populate('friends');
-    } catch (err) {
-      console.log("Error: ", err);
+
+    if (somefriends.length > 0) {
+      let someone;
+      try {
+        // Inject friends by updating the user record in Mongodb
+        someone = await User.findOneAndUpdate(
+          { _id: allUsers[i]._id },
+          { $set: { friends: allUsers[i].friends } },
+          { returnOriginal: false, new: true })
+          .populate('friends');
+      } catch (err) {
+        console.log("Error: ", err);
+      };
     };
 
     // console.log("=========================\nUSER WITH FRIENDS:", JSON.stringify(someone));
@@ -72,26 +70,55 @@ connection.once('open', async () => {
     thoughts.push({
       thoughtText: getRandomThought(),
       username: getRandomArrItem(users).username,
+      createdAt: generateRandomDate(new Date(2021, 0, 1), new Date())
     });
   };
 
-  // Add thoughts
-  // await Thought.collection.insertMany(thoughts);
-  for (let i = 0; i < thoughts.length; i++) {
-    // Populate random reaction strings
-    const subreactions = [];
-    for (let i = 0; i < Math.floor(Math.random() * 5); i++) {
-      subreactions.push({
-        reactionBody: getRandomReaction(),
-        username: getRandomArrItem(users).username,
-      });
-    };
-    thoughts[i].reactions = subreactions;
+  // Add thoughts into database
 
-    // console.log(JSON.stringify(thoughts[i]));
+  console.log("=INSERT THOUGHTS====================================================================================");
+  let insertedThoughts = await Thought.collection.insertMany(thoughts);
+  // Result of insertMany:
+  // {
+  //   acknowledged: true,
+  //   insertedCount: 30,
+  //   insertedIds: {
+  //     '0': new ObjectId('6588c3db6ae6ffcc41787840'),
+  //     '1': new ObjectId('6588c3db6ae6ffcc41787841'),
+  //     '2': new ObjectId('6588c3db6ae6ffcc41787842'),
+  //     ...
+  //   }
+  // }
+
+
+  // Add random reactions into thoughts
+
+  let insertedThoughtsValues = Object.values(insertedThoughts.insertedIds);
+
+  for (let i = 0; i < insertedThoughtsValues.length; i++) {
+    console.log(insertedThoughtsValues[i]);
+    // Populate random reaction strings
+    for (let j = 0; j < Math.floor(Math.random() * 5); j++) {
+      // console.log("INSERTING REACTION", j);
+      let result = await Thought.findByIdAndUpdate(
+        insertedThoughtsValues[i],
+        {
+          $addToSet: {
+            reactions: {
+              reactionBody: getRandomReaction(),
+              username: getRandomArrItem(users).username,
+              createdAt: generateRandomDate(new Date(2021, 0, 1), new Date())
+            }
+          }
+        },
+        {
+          new: true
+        });
+      // console.log(result);
+    };
   };
 
-  await Thought.collection.insertMany(thoughts);
+  console.log("=/INSERT THOUGHTS===================================================================================");
 
   let storedthoughts = await Thought.find().populate().exec();
   console.log("STORED THOUGHTS:", JSON.stringify(storedthoughts, null, 4));

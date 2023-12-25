@@ -1,4 +1,5 @@
-const { Schema } = require('mongoose');
+const { Schema, Types, model } = require('mongoose');
+const { formatDate } = require('../utils/utils');
 
 // Schema to create a course model
 const reactionSchema = new Schema(
@@ -15,20 +16,20 @@ const reactionSchema = new Schema(
     username: {
       type: String,
       required: true,
-      ref: 'User',
     },
     createdAt: {
       type: Date,
-      default: Date.now(),
-      get: () => { return `${Date.now}`; },
+      default: Date.now,
+      get: formatDate,
     },
   },
   {
     toJSON: {
-      // virtuals: true,
+      virtuals: true,
+      getters: true,
     },
-    id: false,
+    _id: false,
   }
 );
 
-module.exports = reactionSchema;
+module.exports = { reactionSchema };

@@ -1,3 +1,5 @@
+// Utility functions for mongoose schema validation and date formatting
+//   Imported by models
 
 const formatDate = (date) => new Date(date).toLocaleString();
 

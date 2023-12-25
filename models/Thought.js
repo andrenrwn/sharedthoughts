@@ -1,6 +1,6 @@
 const { Schema, model, Types } = require('mongoose');
 const { reactionSchema } = require('./Reaction');
-const { formatDate } = require('../utils/utils');
+const { formatDate } = require('./utils');
 
 // Mongoose schema and model to specify thought objects.
 // Thoughts are created by users. Thoughts can have attached reactions from other users.

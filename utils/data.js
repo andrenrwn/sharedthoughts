@@ -1,3 +1,5 @@
+// Seed data and its exported functions
+
 let seed_usernames = [
   'Alexander',
   'Alfredo',

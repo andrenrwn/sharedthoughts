@@ -180,8 +180,9 @@ module.exports = {
                 return res.status(404).json({ message: `Thought with ID ${req.params.thoughtId} not found` })
             };
 
-            console.log("DEL THOUGHT:", previousThought);
+            // console.log("DEL THOUGHT:", previousThought);
 
+            // Pull out the reaction specified by the reactionId parameter from the thought's reactions array
             let resultThought = await Thought.findByIdAndUpdate(
                 req.params.thoughtId,
                 { $pull: { reactions: { reactionId: req.params.reactionId } } },
@@ -200,8 +201,4 @@ module.exports = {
             res.status(500).json({ message: `deleteReaction: ERROR: ${err}` });
         }
     }
-
 };
-
-
-

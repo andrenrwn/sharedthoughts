@@ -1,5 +1,5 @@
 const { Schema, Types } = require('mongoose');
-const { formatDate } = require('../utils/utils');
+const { formatDate } = require('./utils');
 
 // Mongoose schema to specify reactions inside thoughts
 //   This schema is used for validation and is to be placed as a mongoose subdocument to Thoughts { reactions: [reactionSchema]}

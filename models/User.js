@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose');
 // const { Thought, thoughtSchema } = require('./Thought');
-const { validateEmail } = require('../utils/utils');
+const { validateEmail } = require('./utils');
 
 // Schema to create Student model
 const userSchema = new Schema(

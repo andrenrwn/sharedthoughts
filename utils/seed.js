@@ -54,7 +54,6 @@ connection.once('open', async () => {
         console.log("Error: ", err);
       };
     };
-
     // console.log("=========================\nUSER WITH FRIENDS:", JSON.stringify(someone));
 
   };

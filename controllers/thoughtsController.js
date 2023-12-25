@@ -1,5 +1,5 @@
 const { ObjectId } = require('mongoose').Types;
-const { Reaction, Thought, User, reactionSchema } = require('../models');
+const { Thought, User, reactionSchema } = require('../models');
 
 module.exports = {
 
@@ -49,6 +49,7 @@ module.exports = {
             }
             console.log("FOUND USERNAME:", username);
             const createdThought = await Thought.create(req.body);
+            // await createdThought.save();
             const updatedUser = await User.findByIdAndUpdate(username._id,
                 { $addToSet: { thoughts: createdThought._id } },
                 { runValidators: true, new: true });

@@ -2,6 +2,10 @@ const { Schema, model, Types } = require('mongoose');
 const { reactionSchema } = require('./Reaction');
 const { formatDate } = require('../utils/utils');
 
+// Mongoose schema and model to specify thought objects.
+// Thoughts are created by users. Thoughts can have attached reactions from other users.
+// The thought model contain usernames which references the User model.
+
 const thoughtSchema = new Schema(
   {
     thoughtText: {
@@ -12,16 +16,15 @@ const thoughtSchema = new Schema(
     },
     createdAt: {
       type: Date,
-      default: Date.now,
-      get: formatDate,
+      default: Date.now, // date timestamp added automatically (if date is not specified upon creation)
+      get: formatDate,   // format the date
     },
     username: {
-      type: String,
+      type: String,      // username
       required: true,
-      ref: 'User',
+      ref: 'User',       // references the 'User' model
     },
-    // try using Mongoose subdocuments
-    reactions: [reactionSchema],
+    reactions: [reactionSchema],  // reactionSchema specifies a Mongoose subdocument
   },
   {
     toJSON: {

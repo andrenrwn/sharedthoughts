@@ -1,11 +1,12 @@
-const { Schema, Types, model } = require('mongoose');
+const { Schema, Types } = require('mongoose');
 const { formatDate } = require('../utils/utils');
 
-// Schema to create a course model
+// Mongoose schema to specify reactions inside thoughts
+//   This schema is used for validation and is to be placed as a mongoose subdocument to Thoughts { reactions: [reactionSchema]}
 const reactionSchema = new Schema(
   {
     reactionId: {
-      type: Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,  // custom ObjectId instead of Mongoose's built-in _id
       default: () => new Types.ObjectId(),
     },
     reactionBody: {
@@ -19,8 +20,8 @@ const reactionSchema = new Schema(
     },
     createdAt: {
       type: Date,
-      default: Date.now,
-      get: formatDate,
+      default: Date.now, // sets the creation date/time
+      get: formatDate,  // getter function formats the date
     },
   },
   {
@@ -28,7 +29,7 @@ const reactionSchema = new Schema(
       virtuals: true,
       getters: true,
     },
-    _id: false,
+    _id: false, // don't add _id automatically since we already have reactionId
   }
 );
 

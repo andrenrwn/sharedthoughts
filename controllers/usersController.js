@@ -1,5 +1,5 @@
 const { ObjectId } = require('mongoose').Types;
-const { User } = require('../models');
+const { User, Thought } = require('../models');
 
 module.exports = {
 
@@ -42,6 +42,7 @@ module.exports = {
         console.log("========= POST /api/users ROUTE ===========")
         try {
             const createdUser = await User.create(req.body);
+            // await createdUser.save();
             res.json(createdUser);
         } catch (err) {
             res.status(500).json({ message: `createUser: ERROR: ${err}` });
@@ -82,25 +83,28 @@ module.exports = {
     async deleteUser(req, res) {
         console.log("========= DELETE /api/users/:id ROUTE ===========")
         try {
-            const deletedUser = await User.findByIdAndDelete(req.params.id);
-
-            if (!deletedUser) {
+            const userToDelete = await User.findById(req.params.id);
+            if (!userToDelete) {
                 return res.status(404).json({ message: `User with ID ${req.params.id} not found` })
             };
 
-            // const course = await Course.findOneAndUpdate(
-            //     { students: req.params.studentId },
-            //     { $pull: { students: req.params.studentId } },
-            //     { new: true }
-            // );
+            // BONUS: Delete the user's thoughts before deleting the user.
+            for (let i = 0; i < userToDelete.thoughts.length; i++) {
+                let thoughtToDelete = await Thought.findById(userToDelete.thoughts[i]);
+            };
 
-            // if (!course) {
-            //     return res.status(404).json({
-            //         message: 'Student deleted, but no courses found',
-            //     });
-            // }
+            const deletedThoughts = await Thought.deleteMany({ _id: { $in: userToDelete.thoughts } });
+            console.log(deletedThoughts);
 
-            res.json({ message: `User ${deletedUser} successfully deleted` });
+            const deletedUser = await User.findByIdAndDelete(req.params.id);
+
+            // Note: reactions with the already-deleted username will still remain in other people's thoughts.
+            //   Not implemented due to not being specified in specification.
+            //   One implementation idea is to scan all Thoughts for the user's reactions, 
+            //   another is to create a separate collection for a user's reactions, 
+            //   although without cascade delete in mongodb, that will still risk referential integrity
+
+            res.json({ message: `User ${userToDelete} acknowledged ${deletedThoughts.acknowledged} deleted with ${deletedThoughts.deletedCount} thought objects` });
         } catch (err) {
             console.log(err);
             res.status(500).json({ message: `deleteUser: ERROR: ${err}` });

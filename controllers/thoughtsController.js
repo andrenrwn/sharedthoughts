@@ -73,12 +73,12 @@ module.exports = {
             };
 
             if (specifiedusername) {
-                const username = await User.findOne({ username: req.body.username.toLowerCase() });
+                const username = await User.findOne({ username: req.body.username.toLowerCase().trim() });
                 if (!username) {
                     return res.status(404).json({ message: `"username": in body request not found` });
                 };
                 // If the username specified is different than the existing one, prevent it from being changed (users need to delete instead)
-                if ((await Thought.findById(req.params.id)).username === username.username) {
+                if (!(await Thought.findById(req.params.id)).username === username.username) {
                     return res.status(401).json({ message: `"username": in body request is different from the Thought's current user. Please delete the thought and create it with a new user instead` });
                 };
             };
